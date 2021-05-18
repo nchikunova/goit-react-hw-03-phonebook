@@ -18,6 +18,20 @@ class App extends React.Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({contacts: parsedContacts})
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   addContact = (name, number) => {
     const { contacts } = this.state;
     const newContact = {
@@ -25,6 +39,7 @@ class App extends React.Component {
       name,
       number,
     };
+    
     if (contacts.find(contact => contact.name === newContact.name)) {
       alert(`${newContact.name} is already in contacts`);
       return;
@@ -44,20 +59,6 @@ class App extends React.Component {
   changeFilter = event => {
     this.setState({ filter: event.currentTarget.value });
   };
-
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      this.setState({contacts: parsedContacts})
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
 
   render() {
     const { filter } = this.state;
